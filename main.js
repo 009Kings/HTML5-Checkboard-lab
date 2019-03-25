@@ -34,9 +34,9 @@ function tick() {
 
 function update() {
   // g = red => green; p= red => purple; r red => red; w = black => white; b = black/white => black
-  // w = 87; b = 66; g= 71; p= 80; r= 82;
   document.addEventListener("keydown", function(event) {
     switch (event.keyCode) {
+      // w = 87; b = 66; g= 71; p= 80; r= 82;
       case 71:
         gameState.colorA.forEach(index => gameState.grid[index].color = "#0F0")
         break;

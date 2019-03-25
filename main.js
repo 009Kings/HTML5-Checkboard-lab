@@ -10,19 +10,6 @@ document.addEventListener("DOMContentLoaded", function() {
 // c stands for context, puts a bunch of methods into "c"
 let c = canvas.getContext('2d')
 
-class Square {
-  constructor(x, y, color, size) {
-    this.x = x;
-    this.y = y;
-    this.color = color;
-    this.size = size;
-    this.drawSquare = function() {
-      c.fillStyle = this.color
-      c.fillRect(this.x, this.y, this.size, this.size)
-    }
-  }
-}
-
 // Set a gameState with information on the state of the gameboard
 let gameState = {
   gridSize: 800,
@@ -92,7 +79,16 @@ function filterSquares(key, value) {
 
 // Grid helpers
 function makeSquare(x, y, size, color) {
-  gameState.grid.push(new Square(x, y, color, size))
+  gameState.grid.push({
+    x: x,
+    y: y,
+    color: color,
+    size: size,
+    drawSquare: function() {
+      c.fillStyle = this.color
+      c.fillRect(this.x, this.y, this.size, this.size)
+    }
+  })
 }
 
 function makeRow(y, startColor) {

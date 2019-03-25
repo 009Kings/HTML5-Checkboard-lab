@@ -1,6 +1,11 @@
 let canvas = document.querySelector("canvas")
-canvas.setAttribute('width', '800');
-canvas.setAttribute('height', '800');
+
+document.addEventListener("DOMContentLoaded", function() {
+  canvas.setAttribute('width', '800');
+  canvas.setAttribute('height', '800');
+
+  init()
+})
 
 // c stands for context, puts a bunch of methods into "c"
 let c = canvas.getContext('2d')
@@ -11,6 +16,10 @@ class Square {
     this.y = y;
     this.color = color;
     this.size = size;
+    this.drawSquare = function() {
+      c.fillStyle = this.color
+      c.fillRect(this.x, this.y, this.size, this.size)
+    }
   }
 }
 
@@ -18,12 +27,72 @@ class Square {
 let gameState = {
   gridSize: 800,
   grid: [],
+  colorA: [],
+  colorB: [],
 }
 
+function init() {
+  makeGrid()
+  gameState.colorA = filterSquares("color", "#F00")
+  gameState.colorB = filterSquares("color", "#000")
+
+  tick()
+}
+
+function tick() {
+  update()
+  render()
+}
+
+function update() {
+  // g = red => green; p= red => purple; r red => red; w = black => white; b = black/white => black
+  // w = 87; b = 66; g= 71; p= 80; r= 82;
+  document.addEventListener("keydown", function(event) {
+    switch (event.keyCode) {
+      case 71:
+        gameState.colorA.forEach(index => gameState.grid[index].color = "#0F0")
+        break;
+      case 80:
+        gameState.colorA.forEach(index => gameState.grid[index].color = "#F0F")
+        break;
+      case 82:
+        gameState.colorA.forEach(index => gameState.grid[index].color = "#F00")
+        break;
+      case 87:
+        gameState.colorB.forEach(index => gameState.grid[index].color = "#FFF")
+        break;
+      case 66:
+        gameState.colorB.forEach(index => gameState.grid[index].color = "#000")
+        break;
+      default:
+        console.log(event.keyCode, "is not a valid key nerd")
+        break;
+    }
+    // Now that we've changed color, gotta re-render
+    render();
+  })
+  
+}
+
+function render() {
+  gameState.grid.forEach((Square, i) => gameState.grid[i].drawSquare())
+
+}
+
+// Helpful Bois
+function filterSquares(key, value) {
+  let filteredIndexes = []
+  gameState.grid.forEach((square, i) => {
+    if (gameState.grid[i][key] === value) {
+      filteredIndexes.push(i)
+    }
+  })
+  return filteredIndexes
+}
+
+// Grid helpers
 function makeSquare(x, y, size, color) {
   gameState.grid.push(new Square(x, y, color, size))
-  c.fillStyle = color
-  c.fillRect(x, y, size, size)
 }
 
 function makeRow(y, startColor) {
@@ -48,5 +117,3 @@ function makeGrid() {
     }  
   }
 }
-
-makeGrid()

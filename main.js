@@ -19,6 +19,7 @@ let gameState = {
 }
 
 function init() {
+  makeBall(50, 50, "#0F5", 25)
   makeGrid()
   gameState.colorA = filterSquares("color", "#F00")
   gameState.colorB = filterSquares("color", "#000")
@@ -51,10 +52,24 @@ function update() {
       case 66:
         gameState.colorB.forEach(index => gameState.grid[index].color = "#000")
         break;
+      // up = 38, down = 40, left = 37, right = 39
+      case 38:
+        gameState.ball.y -= 10
+        break;
+      case 40:
+        gameState.ball.y += 10
+        break;
+      case 37:
+        gameState.ball.x -= 10
+        break;
+      case 39:
+        gameState.ball.x += 10
+        break;
       default:
         console.log(event.keyCode, "is not a valid key nerd")
         break;
     }
+
     // Now that we've changed color, gotta re-render
     render();
   })
@@ -63,7 +78,7 @@ function update() {
 
 function render() {
   gameState.grid.forEach((Square, i) => gameState.grid[i].drawSquare())
-
+  gameState.ball.drawBall();
 }
 
 // Helpful Bois
@@ -111,5 +126,23 @@ function makeGrid() {
     } else {
       makeRow(i, "#000")
     }  
+  }
+}
+
+function makeBall(x, y, color, radius) {
+  gameState.ball = {
+    x: x,
+    y: y,
+    color: color,
+    radius: radius,
+    drawBall: function() {
+      c.beginPath();
+      c.arc(this.x, this.y, radius, 0, 2 * Math.PI, false);
+      c.fillStyle = this.color;
+      c.fill();
+      c.lineWidth = 5;
+      c.strokeStyle = this.color;
+      c.stroke();
+    }
   }
 }
